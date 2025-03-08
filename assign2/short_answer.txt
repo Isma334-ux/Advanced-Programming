@@ -5,7 +5,14 @@ Marriage Pact
 -------------
 
 Q1. It is your choice to use either an ordered or unordered set. In a few sentences, what are some of the tradeoffs between the two? Additionally, please give an example (that has not been shown in lecture) of a valid hash function that could be used to hash student names for an unordered set.
-A1. TODO
+A1. An ordered set like std::set keeps the elements sorted, so it is useful if we want them in order. The only bad thing is tah is slower for adding, removing or finding elements because it takes 
+more time to the computer. An unordered set like std::unordered_set is faster in this operations, it has aproximately a O(1) time, because it uses a hash table.
+
+A valid hash function for student names could work by adding up the ASCII values of each character in the name and then multiplying the result by a prime number, like 31, to spread out the hash values. This helps ensure that different names produce different hash values, reducing the chance of collisions. 
+Finally, the result can be adjusted using a large prime number to keep the hash within a manageable range. This approach is simple but effective for hashing names in an unordered set
+
 
 Q2. Note that we are saving pointers to names in the queue, not names themselves. Why might this be desired in this problem? What happens if the original set where the names are stored goes out of scope and the pointers are referenced?
-A2. TODO
+A2. Saving pointers to names in the queue instead of the names themselves saves memory and is faster since pointers are smaller and quicker to copy.
+It also ensures consistency if names in the original set are updated.
+If the original set goes out of scope, the pointers become dangling pointers, pointing to invalid memory, which can cause crashes or errors.
