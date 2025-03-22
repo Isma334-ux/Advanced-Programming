@@ -4,8 +4,14 @@ placeholders remaining in the file (and remove this comment too).
 Make a Class
 ------------
 
-Q1. What’s const-correctness and why is it important?
-A1. TODO
+Q1: What’s const-correctness and why is it important?
+A1: So, when we refers to Const-correctness, it means when methods and variables that do not modify the state of 
+an object are marked as `const`. This help us to prevent any accidental modifications, is more readable, and 
+allows the compiler to optimize the program in a better way. It also makes the code easier to understand,
+and it indicates which functions or variables are only for read (read-only).
 
-Q2. Is your class const-correct? How do you know?
-A2. TODO
+Q2: Is your class const-correct? How do you know?
+A2: Yes. The getter methods (`getName()`, `getAge()`, and `getGPA()`), they are marked as
+ `const`, that means they do not modify the object's state. Also, the `displayInfo()` method is also
+marked as `const` because it only reads and displays the data of the objects. This ensures that these methods can be 
+safely called on `const` objects without causing any unintended side effects.
