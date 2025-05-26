@@ -1,54 +1,35 @@
-// main.cpp
-#include "ecc_utils.h"
+#include "ecc_simulation.h"
 #include <iostream>
-#include <fstream>
-#include <cstring>
+#include <string>
+#include <vector>
+
+// Función para generar un string aleatorio del tamaño dado
+std::string generate_random_message(size_t size) {
+    std::string msg;
+    msg.resize(size);
+    randombytes_buf(&msg[0], size);
+    return msg;
+}
 
 int main() {
-    if (sodium_init() < 0) {
-        std::cerr << "Libsodium could not be initialized." << std::endl;
+    if (!initialize_sodium()) {
+        std::cerr << "Failed to initialize Libsodium." << std::endl;
         return 1;
     }
 
-    const char* message = "Welcome to Yachay Tech";
-    unsigned long long message_len = strlen(message);
+    KeyPair device_A = generate_keypair();
+    KeyPair device_B = generate_keypair();
 
-    unsigned char pk_A[crypto_box_PUBLICKEYBYTES], sk_A[crypto_box_SECRETKEYBYTES];
-    unsigned char pk_B[crypto_box_PUBLICKEYBYTES], sk_B[crypto_box_SECRETKEYBYTES];
+    std::vector<size_t> sizes = {10, 100, 1024, 10240}; // 10B, 100B, 1KB, 10KB
 
-    generate_keypair(pk_A, sk_A);
-    generate_keypair(pk_B, sk_B);
+    for (size_t size : sizes) {
+        std::string message = generate_random_message(size);
+        std::string csv_path = "results/ecc_results_" + std::to_string(size) + "B.csv";
 
-    std::ofstream csv_file("results/results.csv");
-    if (!csv_file.is_open()) {
-        std::cerr << "Failed to open CSV file." << std::endl;
-        return 1;
-    }
-    csv_file << "Encryption Time (μs),Decryption Time (μs)\n";
-
-    const int NUM_ITERATIONS = 1000;
-    for (int i = 0; i < NUM_ITERATIONS; ++i) {
-        unsigned char nonce[crypto_box_NONCEBYTES];
-        unsigned char ciphertext[message_len + crypto_box_MACBYTES];
-        unsigned char decrypted[message_len + 1];
-        long long encrypt_time = 0, decrypt_time = 0;
-
-        if (!encrypt_message(reinterpret_cast<const unsigned char*>(message), message_len,
-                             pk_B, sk_A, nonce, ciphertext, encrypt_time)) {
-            std::cerr << "Encryption failed at iteration " << i << std::endl;
-            continue;
-        }
-
-        if (!decrypt_message(ciphertext, message_len + crypto_box_MACBYTES,
-                             pk_A, sk_B, nonce, decrypted, decrypt_time)) {
-            std::cerr << "Decryption failed at iteration " << i << std::endl;
-            continue;
-        }
-
-        decrypted[message_len] = '\0';
-        csv_file << encrypt_time << "," << decrypt_time << "\n";
+        std::cout << "Running simulation for message size: " << size << " bytes...\n";
+        run_simulation(message, device_A, device_B, csv_path, 1000);
+        std::cout << "Finished. Results saved to: " << csv_path << "\n\n";
     }
 
-    csv_file.close();
     return 0;
 }
