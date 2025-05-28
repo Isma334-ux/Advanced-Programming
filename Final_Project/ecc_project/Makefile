@@ -1,24 +1,24 @@
-# Ejecutables
+# Executables
 ECC_TARGET = ecc_simulation
 CHACHA_TARGET = chacha_simulation
 
-# Compilador y flags
+# Compiler and flags
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Iinclude
 LDFLAGS = -lsodium
 
-# Directorios
+# Directories
 SRCDIR = src
 RESULTS_DIR = results
 
-# Archivos fuente y objetos
+# Source Files and objects
 ECC_SOURCES = $(SRCDIR)/ecc_simulation.cpp $(SRCDIR)/main.cpp
 CHACHA_SOURCES = $(SRCDIR)/chacha_simulation.cpp $(SRCDIR)/main_chacha.cpp
 
 ECC_OBJECTS = $(ECC_SOURCES:.cpp=.o)
 CHACHA_OBJECTS = $(CHACHA_SOURCES:.cpp=.o)
 
-# Regla por defecto
+# Default Rule
 all: $(ECC_TARGET) $(CHACHA_TARGET)
 
 $(ECC_TARGET): $(ECC_OBJECTS)

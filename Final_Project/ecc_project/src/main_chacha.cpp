@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-// Genera mensaje aleatorio de tamaño dado
+// Generates a random message of a given size
 std::string generate_random_message(size_t size) {
     std::string msg;
     msg.resize(size);
@@ -18,7 +18,7 @@ int main() {
         return 1;
     }
 
-    std::vector<size_t> sizes = {10, 100, 1024, 10240}; // 10B, 100B, 1KB, 10KB
+    std::vector<size_t> sizes = {16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
 
     for (size_t size : sizes) {
         std::string message = generate_random_message(size);
