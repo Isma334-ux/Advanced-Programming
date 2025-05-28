@@ -1,11 +1,11 @@
-# ECC vs ChaCha20 Simulation for IoT Devices
+# ECC vs ChaCha20-Poly1305 Simulation for IoT Devices
 
-This project simulates and compares the performance of two cryptographic algorithms in the context of IoT devices: **ECC (Elliptic Curve Cryptography)** and **ChaCha20-Poly1305**, using the [Libsodium](https://libsodium.gitbook.io/doc/) library. The simulation measures encryption and decryption times, as well as the overhead for different message sizes.
+This project simulates and compares the performance of two cryptographic algorithms with the intention to be applied in IoT devices: **ECC (Elliptic Curve Cryptography)** and **ChaCha20-Poly1305**, using the [Libsodium](https://libsodium.gitbook.io/doc/) library. The simulation measures encryption and decryption times, as well as the overhead for different message sizes.
 
 > 📌 Developed and tested in a Linux environment (Ubuntu).
 
 ## 📁 Project Structure
-
+```
 ecc_project/
 ├── bin/ # Compiled binaries
 ├── env/ # Python virtual environment for plotting
@@ -15,15 +15,16 @@ ecc_project/
 ├── analyze_results.py # Python script for plotting
 ├── Makefile # Makefile for building the project
 
-markdown
-Copy
-Edit
+```
 
 ## ⚙️ Requirements
+### Operative System
+- Ubuntu 20.04+ (or compatible Linux)
+- If you are a windows user, you can use WSL to run ubuntu as a subsystem
 
 ### C++ (for simulation)
 - [Libsodium](https://libsodium.gitbook.io/doc/installation)
-- g++
+- g++9.0+
 - make
 
 ### Python (for plotting)
@@ -31,82 +32,81 @@ Edit
 - `matplotlib`
 - `pandas`
 
-To set up the Python environment:
 
-```bash
-cd ecc_project
+### Setup
+1. Install libsodium
+```
+sudo apt-get install libsodium-dev
+```
+2. Create the environment
+```
 python3 -m venv env
 source env/bin/activate
-pip install -r requirements.txt
-Contents of requirements.txt:
+pip install matplotlib pandas
+```
 
-nginx
-Copy
-Edit
-matplotlib
-pandas
-🔨 Building the Project
-Compile using make:
+## Running simulations
+You can run the code using ```make```. This will:
+- Compile all source files from the ```src/``` directory.
+- Generate object files and the final executable.
 
-bash
-Copy
-Edit
-make
-This generates two binaries in bin/:
 
-ecc.app — ECC simulation
+After compilation
 
-chacha.app — ChaCha20 simulation
+**To execute the ```ecc encryption``` just write :**
+```
+./ecc_simulation
+```
 
-🚀 Running the Simulations
-Each simulation runs across multiple message sizes and performs 1000 iterations per size. Results are stored in CSV format.
+**To execute the ```ChaCha20-Poly1305``` just write :**
+```
+./chacha_simulation
+```
+  
+**To clean up compiled files, use:**
+```
+make clean
+```
 
-bash
-Copy
-Edit
-./bin/ecc.app       # Run ECC simulation
-./bin/chacha.app    # Run ChaCha20 simulation
-CSV outputs are saved in the results/ folder.
+**To clean up all the ```.csv``` files, use:**
+```
+make dist-clean
+```
 
-📊 Visualizing Results
-To generate performance plots:
-
-bash
-Copy
-Edit
-source env/bin/activate
+## Run the analysis
+After activate the enviroment using ```source env/bin/activate``` you need to use
+```
 python analyze_results.py
-This creates the following plots in results/:
+```
+Then in ```results/``` 3 graphics will be created, showing:
 
-encryption_time_comparison.png
+- ⏱ Encryption Time (μs)
 
-decryption_time_comparison.png
+- ⏱ Decryption Time (μs)
 
-overhead_comparison.png
+- 🧱 Overhead (bytes): Difference between ciphertext and plaintext size
 
-📈 Metrics Collected
-For each message size:
 
-⏱ Encryption Time (μs)
+## Descriptions of the algorithms
 
-⏱ Decryption Time (μs)
+### 🔐 ChaCha20-Poly1305
+Libsodium provides authenticated encryption using the ChaCha20-Poly1305 construction, combining the fast ChaCha20 stream cipher (256-bit key) with the Poly1305 MAC for integrity. It offers:
 
-🧱 Overhead (bytes): Difference between ciphertext and plaintext size
+- Secure encryption with a 12-byte nonce and 32-byte key.
 
-🔐 Cryptographic Details
-ChaCha20-Poly1305: A fast, modern, and secure AEAD symmetric cipher, suitable for constrained devices and software-only environments.
+- Built-in authentication (128-bit tag) to prevent tampering.
 
-ECC (via crypto_box): Asymmetric encryption using public/private key pairs.
+- Additional Data (AAD) support for authenticated metadata.
 
-All cryptographic operations use Libsodium for high security and performance.
+- Resistance to timing attacks, making it ideal for high-speed encryption (e.g., TLS, VPNs).
 
-📚 Credits
-Developed for a performance simulation project comparing cryptographic algorithms in resource-constrained environments.
+### 🔗 ECC (Curve25519 & Ed25519)
+Libsodium uses elliptic-curve cryptography (ECC) for key exchange and signatures:
 
-Cryptographic library: Libsodium
+- X25519: For ECDH key exchange, enabling secure shared secrets with 32-byte keys.
 
-yaml
-Copy
-Edit
+- Ed25519: For fast, deterministic digital signatures (64-byte signatures).
 
----
+- Post-quantum secure: Based on strong elliptic curves (SafeCurves compliant).
+
+- Used in Signal, WireGuard, and SSH for forward secrecy and lightweight operations.
