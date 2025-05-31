@@ -1,4 +1,4 @@
-# ECC vs ChaCha20-Poly1305 Simulation for IoT Devices
+# Performance Comparison of ECC and ChaCha20-Poly1305 for IoT Encryption
 
 This project simulates and compares the performance of two cryptographic algorithms with the intention to be applied in IoT devices: **ECC (Elliptic Curve Cryptography)** and **ChaCha20-Poly1305**, using the [Libsodium](https://libsodium.gitbook.io/doc/) library. The simulation measures encryption and decryption times, as well as the overhead for different message sizes.
 
